@@ -1,0 +1,100 @@
+basePath: /
+definitions:
+  models.Book:
+    properties:
+      author:
+        example: Alan A. A. Donovan
+        type: string
+      id:
+        example: 1
+        type: integer
+      title:
+        example: The Go Programming Language
+        type: string
+    type: object
+  models.BookResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.Book'
+        type: array
+      error:
+        example: true
+        type: boolean
+      message:
+        example: Invalid request
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  models.Ping:
+    properties:
+      data:
+        example: pong
+        type: string
+      error:
+        example: true
+        type: boolean
+      message:
+        example: Invalid request
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server for managing books.
+  title: Book API
+  version: "1.0"
+paths:
+  /api/v1/books:
+    get:
+      description: get books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.BookResponse'
+      summary: Get all books
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      description: create by JSON book
+      parameters:
+      - description: Add book
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/models.Book'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Book'
+      summary: Create a book
+      tags:
+      - Books
+  /api/v1/ping:
+    get:
+      description: Get ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Ping'
+      summary: Get ping
+      tags:
+      - Utilities
+swagger: "2.0"
