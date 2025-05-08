@@ -25,7 +25,7 @@ myproject/
 swag init -g .\cmd\server\main.go
 ```
 
-[Book API](http://localhost:8080/swagger/index.html)
+[Book API](http://localhost:8080/api/docs/index.html)
 
 ## run
 

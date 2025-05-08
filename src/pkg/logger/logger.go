@@ -1,17 +1,13 @@
-// pkg/logger/logger.go
 package logger
 
 import (
 	"os"
 
-	"github.com/sirupsen/logrus"
+	logger "github.com/sirupsen/logrus"
 )
 
-var Log *logrus.Logger
-
 func init() {
-	Log = logrus.New()
-	Log.SetOutput(os.Stdout)
-	Log.SetFormatter(&logrus.JSONFormatter{})
-	Log.SetLevel(logrus.InfoLevel)
+	logger.SetOutput(os.Stdout)
+	logger.SetFormatter(&logger.JSONFormatter{})
+	logger.SetLevel(logger.InfoLevel)
 }

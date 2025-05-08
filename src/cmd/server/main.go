@@ -1,18 +1,19 @@
 package main
 
 import (
-	_ "nhannguyen/gorest/docs" // swag docs
 	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+
+	logger "github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	apiV1 "nhannguyen/gorest/internal/routes/v1"
-	"nhannguyen/gorest/pkg/logger"
+	_ "nhannguyen/gorest/docs"
+	v1 "nhannguyen/gorest/internal/routes/v1"
 )
 
 // @title Book API
@@ -24,9 +25,10 @@ import (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		logger.Log.Info("Error loading .env file")
+		logger.Info("Error loading .env file")
+		return
 	}
-	logger.Log.Info("Loaded .env file")
+	logger.Info("Loaded .env file")
 }
 
 func main() {
@@ -48,14 +50,18 @@ func main() {
 
 	api := router.Group("/api")
 	{
-		apiV1.InitRoutes(api)
+		v1.InitRoutes(api)
 	}
 
 	router.GET("/", func(c *gin.Context) {
 		c.File("web/index.html")
 	})
 
+	router.NoRoute(func(c *gin.Context) {
+		c.File("web/404.html")
+	})
+
 	port := os.Getenv("PORT")
 	router.Run(":" + port)
-	logger.Log.Infof("Server started on port %s", port)
+	logger.Infof("Server started on port %s", port)
 }

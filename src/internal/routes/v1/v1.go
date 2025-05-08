@@ -1,9 +1,9 @@
 package v1
 
 import (
-	"nhannguyen/gorest/internal/routes/v1/handlers"
-
 	"github.com/gin-gonic/gin"
+
+	"nhannguyen/gorest/internal/routes/v1/handlers"
 )
 
 func InitRoutes(api *gin.RouterGroup) {

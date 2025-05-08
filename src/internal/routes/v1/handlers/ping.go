@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"net/http"
-	"nhannguyen/gorest/internal/routes/v1/models"
 
 	"github.com/gin-gonic/gin"
+
+	"nhannguyen/gorest/internal/routes/v1/models"
 )
 
 // GetPing godoc
