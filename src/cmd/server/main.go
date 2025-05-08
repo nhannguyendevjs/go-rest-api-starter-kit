@@ -14,6 +14,7 @@ import (
 
 	_ "nhannguyen/gorest/docs"
 	v1 "nhannguyen/gorest/internal/routes/v1"
+	_ "nhannguyen/gorest/pkg/logger"
 )
 
 // @title Book API
