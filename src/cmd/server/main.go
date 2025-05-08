@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
+	"net/http"
 	"os"
-	"time"
+	"os/signal"
+	"syscall"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -24,45 +27,50 @@ import (
 // @BasePath /
 
 func init() {
-	err := godotenv.Load()
+	err := godotenv.Load("../../.env")
 	if err != nil {
-		logger.Info("Error loading .env file")
+		logger.Fatalf("Failed to load environment file (.env): %v", err)
 		return
 	}
-	logger.Info("Loaded .env file")
+	logger.Info("Environment file (.env) loaded successfully.")
 }
 
 func main() {
-	router := gin.Default()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
-	// Configure CORS to only allow specific non-localhost origins
-	config := cors.Config{
-		AllowOrigins:     []string{"https://your-production-domain.com"}, // Only allow this
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}
+	app := gin.Default()
 
-	router.Use(cors.New(config))
+	app.Use(cors.Default())
 
-	router.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	app.GET("/api/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	api := router.Group("/api")
+	api := app.Group("/api")
 	{
 		v1.InitRoutes(api)
 	}
 
-	router.GET("/", func(c *gin.Context) {
-		c.File("web/index.html")
+	app.GET("/", func(c *gin.Context) {
+		c.File("../../web/index.html")
 	})
 
-	router.NoRoute(func(c *gin.Context) {
-		c.File("web/404.html")
+	app.NoRoute(func(c *gin.Context) {
+		c.File("../../web/404.html")
 	})
 
 	port := os.Getenv("PORT")
-	router.Run(":" + port)
-	logger.Infof("Server started on port %s", port)
+	server := &http.Server{
+		Addr:    ":" + port,
+		Handler: app,
+	}
+
+	go func() {
+		logger.Infof("Server is starting on port %s...", port)
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Fatalf("Failed to start server on port %s: %v", port, err)
+		}
+	}()
+
+	<-ctx.Done()
+	logger.Info("Server has been stopped.")
 }
