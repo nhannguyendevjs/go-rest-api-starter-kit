@@ -6,17 +6,17 @@ import (
 	"nhannguyen/gorest/internal/routes/v1/handlers"
 )
 
-func InitRoutes(api *gin.RouterGroup) {
-	apiV1 := api.Group("/v1")
+func Init(appRouter *gin.RouterGroup) {
+	v1Router := appRouter.Group("/v1")
 
 	// Ping routes
-	pingRoutes := apiV1.Group("/ping")
+	pingRoutes := v1Router.Group("/ping")
 	{
 		pingRoutes.GET("", handlers.GetPing)
 	}
 
 	// Book routes
-	bookRoutes := apiV1.Group("/books")
+	bookRoutes := v1Router.Group("/books")
 	{
 		bookRoutes.GET("", handlers.GetBooks)
 		bookRoutes.POST("", handlers.CreateBook)
