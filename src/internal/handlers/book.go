@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"nhannguyen/gorest/internal/routes/v1/models"
+	"nhannguyen/gorest/internal/models"
 )
 
 var books = []models.Book{
@@ -17,6 +17,8 @@ var books = []models.Book{
 // @Summary Get all books
 // @Description get books
 // @Tags Books
+// @Security BearerAuth
+// @Accept  json
 // @Produce json
 // @Success 200 {object} models.BookResponse
 // @Router /api/v1/books [get]
@@ -32,18 +34,22 @@ func GetBooks(c *gin.Context) {
 // @Summary Create a book
 // @Description create by JSON book
 // @Tags Books
-// @Accept json
+// @Security BearerAuth
+// @Accept  json
 // @Produce json
 // @Param book body models.Book true "Add book"
 // @Success 200 {object} models.Book
 // @Router /api/v1/books [post]
 func CreateBook(c *gin.Context) {
 	var newBook models.Book
+
 	if err := c.ShouldBindJSON(&newBook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	newBook.ID = len(books) + 1
 	books = append(books, newBook)
+
 	c.JSON(http.StatusOK, newBook)
 }

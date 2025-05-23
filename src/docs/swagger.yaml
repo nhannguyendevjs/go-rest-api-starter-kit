@@ -28,7 +28,7 @@ definitions:
         example: true
         type: boolean
     type: object
-  models.Ping:
+  models.PingResponse:
     properties:
       data:
         example: pong
@@ -52,6 +52,8 @@ info:
 paths:
   /api/v1/books:
     get:
+      consumes:
+      - application/json
       description: get books
       produces:
       - application/json
@@ -60,11 +62,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.BookResponse'
+      security:
+      - BearerAuth: []
       summary: Get all books
       tags:
       - Books
     post:
       consumes:
+      - application/json
       - application/json
       description: create by JSON book
       parameters:
@@ -81,6 +86,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Book'
+      security:
+      - BearerAuth: []
       summary: Create a book
       tags:
       - Books
@@ -93,8 +100,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Ping'
+            $ref: '#/definitions/models.PingResponse'
       summary: Get ping
       tags:
       - Utilities
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -17,7 +17,15 @@ const docTemplate = `{
     "paths": {
         "/api/v1/books": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "get books",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -35,8 +43,14 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "create by JSON book",
                 "consumes": [
+                    "application/json",
                     "application/json"
                 ],
                 "produces": [
@@ -81,7 +95,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Ping"
+                            "$ref": "#/definitions/models.PingResponse"
                         }
                     }
                 }
@@ -129,7 +143,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Ping": {
+        "models.PingResponse": {
             "type": "object",
             "properties": {
                 "data": {
@@ -149,6 +163,13 @@ const docTemplate = `{
                     "example": true
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
